@@ -39,6 +39,7 @@ public class ConvertDAO {
 	                e.printStackTrace();
 	        }
 		}
+    	 System.err.println("Player "+name+" not found");
 		return 0;
 		
      }

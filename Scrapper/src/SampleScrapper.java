@@ -1,3 +1,5 @@
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +14,9 @@ public class SampleScrapper {
 	static List<PlayerRecord> twentyTwo = new ArrayList<PlayerRecord>();
 	static ConvertDAO dao = new ConvertDAO();
 	public static void main(String[] args) throws Exception {
-		
-		Document doc = Jsoup.connect("http://www.espncricinfo.com/ci/engine/match/533295.html").get();
+		System.out.println("Enter Cricinfo Match Scorecard URL: ");
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		Document doc = Jsoup.connect(br.readLine()).get();
 		Element inningsBat1 = doc.getElementById("inningsBat1");
 		Elements inningsRow = inningsBat1.getElementsByClass("inningsRow");
 		int count = addtoList(inningsRow);
@@ -25,7 +28,7 @@ public class SampleScrapper {
 		inningsRow = inningsBat2.getElementsByClass("inningsRow");
 		count = addtoList(inningsRow);
 		if(count!=11)
-			addDNB(inningsTable.get(4));
+			addDNB(inningsTable.get(5));
 		
 		//dismissal
 		inningsRow = inningsBat1.getElementsByClass("inningsRow");
@@ -50,7 +53,7 @@ public class SampleScrapper {
 		Element inningsBowl2 = doc.getElementById("inningsBowl2");
 		inningsRow = inningsBowl2.getElementsByClass("inningsRow");
 		updateBowlingFigures(inningsRow);
-		
+		System.out.println("\n\n");
 		for(int i=0;i<twentyTwo.size();i++)
 		{
 			twentyTwo.get(i).print();
@@ -62,7 +65,7 @@ public class SampleScrapper {
 
 	private static void updateBowlingFigures(Elements inningsRow) {
 		for (int i=0;i<inningsRow.size();i++) {
-			int bowlingDetails[] = new int[6];
+			int bowlingDetails[] = new int[5];
 			Element bowler = inningsRow.get(i);
 			Elements bowlerName = bowler.getElementsByTag("a");
 			int tempID = lookupIDUnder22(bowlerName.text());
@@ -80,21 +83,21 @@ public class SampleScrapper {
 				if(extra.length>1)
 				{
 					extra[0]=extra[0].replace("nb", "");
-					bowlingDetails[5]=Integer.parseInt(extra[0]);
+					bowlingDetails[4]=Integer.parseInt(extra[0]);
 					extra[1]=extra[1].replace("w", "");
-					bowlingDetails[4]=Integer.parseInt(extra[1]);
+					bowlingDetails[3]=Integer.parseInt(extra[1]);
 				}
 				else
 				{
 					if(extra[0].contains("w"))
 					{
 						extra[0]=extra[0].replace("w", "");
-						bowlingDetails[4]=Integer.parseInt(extra[0]);
+						bowlingDetails[3]=Integer.parseInt(extra[0]);
 					}
 					else
 					{
 						extra[0]=extra[0].replace("nb", "");
-						bowlingDetails[5]=Integer.parseInt(extra[0]);
+						bowlingDetails[4]=Integer.parseInt(extra[0]);
 					}
 				}
 			}
@@ -122,6 +125,7 @@ public class SampleScrapper {
 			case "run" :
 				//TODO : how to handle this?
 				twentyTwo.get(i).dismissal="runout";
+				incRunouts(dismissal[1]);
 				break;
 			case "not" :
 				twentyTwo.get(i).dismissal="NO";
@@ -155,6 +159,18 @@ public class SampleScrapper {
 				tempID=lookupPlayerIDInMatch(dismissal[1]);
 				twentyTwo.get(i).wicketTaker = tempID;	
 				break;
+		}
+	}
+
+	private static void incRunouts(String input) {
+		input=input.replaceAll("\\(", "");
+		input=input.replaceAll("\\)", "");
+		input=input.replaceAll("out ", "");
+		String[] runout = input.split("/");
+		for(int i=0;i<runout.length;i++)
+		{
+			int tempID = lookupIDUnder22(runout[i].replaceFirst("†", ""));
+			twentyTwo.get(tempID).runouts++;
 		}
 	}
 
@@ -207,6 +223,11 @@ public class SampleScrapper {
 			Element batsman = inningsRow.get(i);
 			PlayerRecord player = new PlayerRecord();
 			Elements batsmanName = batsman.getElementsByTag("a");
+			Elements wKC = batsman.getElementsByClass("playerName");
+			if(wKC.get(0).text().contains("*"))
+				player.isCap=true;
+			if(wKC.get(0).text().contains("†"))
+				player.isWK=true;
 			player.playerName = batsmanName.text();
 			player.playerID = dao.lookupID(player.playerName);
 			Elements runDetails = batsman.getElementsByClass("battingRuns");

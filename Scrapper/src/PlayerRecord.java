@@ -23,13 +23,13 @@ public class PlayerRecord {
 	}
 	public void print()
 	{
-		System.out.print(playerID+",");
+		System.out.print(playerID+"\t");
 		for(int i=0;i<runDetails.length;i++)
-			System.out.print(runDetails[i]+",");
-		System.out.print(dismissal+","+wicketTaker+","+oversBowled+",");
+			System.out.print(runDetails[i]+"\t");
+		System.out.print(dismissal+"\t"+wicketTaker+"\t"+oversBowled+"\t");
 		for(int i=0;i<bowlingDetails.length;i++)
-			System.out.print(bowlingDetails[i]+",");
-		System.out.print(catches+","+stumps+","+runouts+","+isWK+","+isCap);
+			System.out.print(bowlingDetails[i]+"\t");
+		System.out.print(catches+"\t"+stumps+"\t"+runouts+"\t"+isWK+"\t"+isCap);
 		
 	}
 }

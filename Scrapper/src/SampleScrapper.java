@@ -21,14 +21,23 @@ public class SampleScrapper {
 		Elements inningsRow = inningsBat1.getElementsByClass("inningsRow");
 		int count = addtoList(inningsRow);
 		Elements inningsTable = doc.getElementsByClass("inningsTable");//max of 3 for each team
+		boolean firstInningsAllout = true;
 		if(count!=11)
+		{
 			addDNB(inningsTable.get(1));
+			firstInningsAllout= false;
+		}
 		//11 players of team 1 added by now
 		Element inningsBat2 = doc.getElementById("inningsBat2");
 		inningsRow = inningsBat2.getElementsByClass("inningsRow");
 		count = addtoList(inningsRow);
 		if(count!=11)
-			addDNB(inningsTable.get(5));
+		{
+			if(!firstInningsAllout)
+				addDNB(inningsTable.get(5));
+			else
+				addDNB(inningsTable.get(4));
+		}
 		
 		//dismissal
 		inningsRow = inningsBat1.getElementsByClass("inningsRow");

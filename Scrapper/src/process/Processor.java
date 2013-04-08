@@ -62,6 +62,10 @@ public class Processor {
 			int score1 = dbConnection.getMeanScoreForBatsmanAgainst(pid, teamId1, teamId2);
 			int score2 = dbConnection.getMeanScoreForBatsmanInRecentTime(pid);
 			int score = (score1 + score2)/2;
+			System.out.println("player:"+playerName);
+			System.out.println("Score1:"+score1);
+			System.out.println("Score2:"+score2);
+			System.out.println("Normalized score:"+score);
 			team1Score = team1Score+ score;
 		}
 
@@ -74,11 +78,17 @@ public class Processor {
 			int score1 = dbConnection.getMeanScoreForBatsmanAgainst(pid, teamId2,teamId1);
 			int score2 = dbConnection.getMeanScoreForBatsmanInRecentTime(pid);
 			int score = (score1 + score2)/2;
+			System.out.println("player:"+playerName);
+			System.out.println("Score1:"+score1);
+			System.out.println("Score2:"+score2);
+			System.out.println("Normalized score:"+score);
 			team2Score = team2Score+ score;
 		}
+
+		/*double	t1Score =  team1Score * (team1Strength / (double)team2Strength);
+		double t2Score = team2Score * (team2Strength / (double)team1Strength);*/
 		
-		team1Score =  team1Score * (team1Strength / team2Strength);
-		team2Score = team2Score * (team2Strength / team1Strength);
+		
 		System.out.println("Predicted Scores:");
 		System.out.println(teamId1+":"+team1Score);
 		System.out.println(teamId2+":"+team2Score);
@@ -89,6 +99,8 @@ public class Processor {
 	{
 		m = readMatchDetails(matchFile);
 		//m.printMatchDetails();
+		processTeamBasedApproach(roster1,roster2);
+
 
 	}
 

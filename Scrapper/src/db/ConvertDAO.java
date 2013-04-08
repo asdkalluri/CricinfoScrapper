@@ -1,3 +1,4 @@
+package db;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -42,5 +43,20 @@ public class ConvertDAO {
     	 System.err.println("Player "+name+" not found");
 		return 0;
 		
+     }
+
+     public int getTeamId(String teamName)
+     {
+    	 return -1;
+     }
+     
+     public int getNoMatchesWonBy(int teamId1,int teamId2)
+     {
+    	 return -1;
+     }
+     
+     public int getNumberOfMatchesWonInlast5Matches(int teamId)
+     {
+    	 return -1;
      }
 }

@@ -1,3 +1,4 @@
+package db;
 import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -5,9 +6,9 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
 	//private String driverClassName = "com.mysql.jdbc.Driver";
-	private String connectionUrl = "jdbc:mysql://localhost:3306/dataminingcricket";
-	private String user = "test";
-	private String pwd = "test";
+	private String connectionUrl = "jdbc:mysql://localhost:3306/datamining";
+	private String user = "root";
+	private String pwd = "";
 
 	private static ConnectionFactory connectionFactory = null;
 

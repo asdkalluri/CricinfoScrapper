@@ -1,3 +1,4 @@
+package db;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class SampleScrapper {
 		if(count!=11)
 		{
 			addDNB(inningsTable.get(1));
-			firstInningsAllout= false;
+			firstInningsAllout= false;	
 		}
 		//11 players of team 1 added by now
 		Element inningsBat2 = doc.getElementById("inningsBat2");
@@ -129,45 +130,48 @@ public class SampleScrapper {
 		String[] dismissal = input.split(" ", 2);
 		String[] nextSplit;
 		int tempID;
-		switch(dismissal[0])
+		if(dismissal[0].equalsIgnoreCase("run"))
 		{
-			case "run" :
-				//TODO : how to handle this?
-				twentyTwo.get(i).dismissal="runout";
-				incRunouts(dismissal[1]);
-				break;
-			case "not" :
-				twentyTwo.get(i).dismissal="NO";
-				break;
-			case "lbw" :
-				twentyTwo.get(i).dismissal="lbw";
-				nextSplit = dismissal[1].split("b ");
-				tempID=lookupPlayerIDInMatch(nextSplit[0]);
-				twentyTwo.get(i).wicketTaker = tempID;
-				break;
-			case "st" :
-				twentyTwo.get(i).dismissal="stumped";
-				nextSplit = dismissal[1].split(" b ");
-				tempID=lookupPlayerIDInMatch(nextSplit[1]);
-				incStumpings(nextSplit[0].replaceFirst("†", ""));	
-				twentyTwo.get(i).wicketTaker = tempID;
-				break;
-			case "c" :
-				//handle '&'
-				twentyTwo.get(i).dismissal="caught";
-				nextSplit = dismissal[1].split(" b ");
-				if(nextSplit[0].equals("&"))
-					incCatches(nextSplit[1]);
-				else
-					incCatches(nextSplit[0].replaceFirst("†", ""));
-				tempID=lookupPlayerIDInMatch(nextSplit[1]);
-				twentyTwo.get(i).wicketTaker = tempID;			
-				break;
-			case "b" :
-				twentyTwo.get(i).dismissal="bowled";
-				tempID=lookupPlayerIDInMatch(dismissal[1]);
-				twentyTwo.get(i).wicketTaker = tempID;	
-				break;
+		//TODO : how to handle this?
+			twentyTwo.get(i).dismissal="runout";
+			incRunouts(dismissal[1]);
+		}
+		else if (dismissal[0].equalsIgnoreCase("not"))
+		{
+			twentyTwo.get(i).dismissal="NO";
+		}
+		else if (dismissal[0].equalsIgnoreCase("lbw"))
+		{	
+			twentyTwo.get(i).dismissal="lbw";
+			nextSplit = dismissal[1].split("b ");
+			tempID=lookupPlayerIDInMatch(nextSplit[0]);
+			twentyTwo.get(i).wicketTaker = tempID;
+		}
+		else if (dismissal[0].equalsIgnoreCase("st"))
+		{	
+			twentyTwo.get(i).dismissal="stumped";
+			nextSplit = dismissal[1].split(" b ");
+			tempID=lookupPlayerIDInMatch(nextSplit[1]);
+			incStumpings(nextSplit[0].replaceFirst("†", ""));	
+			twentyTwo.get(i).wicketTaker = tempID;
+		}
+		else if (dismissal[0].equalsIgnoreCase("c"))
+		{	
+			//handle '&'
+			twentyTwo.get(i).dismissal="caught";
+			nextSplit = dismissal[1].split(" b ");
+			if(nextSplit[0].equals("&"))
+				incCatches(nextSplit[1]);
+			else
+				incCatches(nextSplit[0].replaceFirst("†", ""));
+			tempID=lookupPlayerIDInMatch(nextSplit[1]);
+			twentyTwo.get(i).wicketTaker = tempID;			
+		}
+		else if (dismissal[0].equalsIgnoreCase("b"))
+		{	
+			twentyTwo.get(i).dismissal="bowled";
+			tempID=lookupPlayerIDInMatch(dismissal[1]);
+			twentyTwo.get(i).wicketTaker = tempID;	
 		}
 	}
 

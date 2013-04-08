@@ -67,38 +67,6 @@ public class Utility {
 			System.err.println("Error: " + e.getMessage());
 		}
 	}
-
-	public static String returnFirstNWords(String t, int n)
-	{
-		if(t == null)
-			return null;
-
-		System.out.println(t);
-		String words [] = t.split(space);
-		
-		System.out.println(words.length);
-		System.out.println(words[0]);
-		System.out.println(words[1]);
-		ArrayList<String> list = new ArrayList<String>();
-		for(int i=0;i<words.length;i++)
-		{	
-			if(!words[i].equalsIgnoreCase(""))
-				list.add(words[i]);
-		}
-
-		int size = list.size();
-
-		if(size < n)
-			return null;
-		else
-		{
-			StringBuilder sb = new StringBuilder();
-			for(int i=0;i<n;i++)
-				sb.append(list.get(i)).append(space);
-			return sb.toString().trim();
-		}
-	}
-
 	
 	public static String[] splitLine(String line)
 	{

@@ -96,6 +96,6 @@ public class Processor {
 	{
 		Processor p = new Processor();
 		String matchFile = "files/matchInfo";
-		p.processMatch(matchFile, "_", "_");
+		p.processMatch(matchFile, "files/Team1Roster", "files/Team2Roster");
 	}
 }

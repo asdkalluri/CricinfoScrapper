@@ -139,6 +139,13 @@ public class ConvertDAO {
     	 return -1;
      }
      
+     /**
+      * 
+      * @param playerId
+      * @param clusterType
+      * @param clusterMembers
+      * @return
+      */
      public int getMeanScoreForBatsman(int playerId, int clusterType, ArrayList<String> clusterMembers)
      {
     	 return -1;

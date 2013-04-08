@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 
 public class ConvertDAO {
@@ -56,6 +57,26 @@ public class ConvertDAO {
      }
      
      public int getNumberOfMatchesWonInlast5Matches(int teamId)
+     {
+    	 return -1;
+     }
+     
+     public int getPlayerId(String name)
+     {
+    	 return -1;
+     }
+     
+     public int getMeanScoreForBatsmanInRecentTime(int playerId)
+     {
+    	 return -1;
+     }
+
+     public int getMeanScoreForBatsmanAgainst(int teamId)
+     {
+    	 return -1;
+     }
+     
+     public int getMeanScoreForBatsman(int playerId, int clusterType, ArrayList<String> clusterMembers)
      {
     	 return -1;
      }

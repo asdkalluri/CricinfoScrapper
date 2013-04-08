@@ -126,6 +126,38 @@ public class ConvertDAO {
      
      public int getNumberOfMatchesWonInlast5Matches(int teamId)
      {
+    	 Connection conn = null;
+         PreparedStatement ps = null;
+         ResultSet rs = null;
+    	 try{
+    		 conn = getConnection();
+    		 ps = conn.prepareStatement("SELECT M.winner FROM `match` M  where M.team1=? or M.team2=? order by M.date desc");
+    		 ps.setInt(1,teamId);
+    		 ps.setInt(2,teamId);
+    		 rs=ps.executeQuery();
+    		 int count = 0;
+    		 int matchesWon=0;
+    		 while(rs.next()&&count<5)
+    		 {
+    			 if(rs.getInt(1)==teamId)
+    				 matchesWon++;
+    			 count++;
+    		 }
+    		 return matchesWon;
+    	 }catch(SQLException e){
+    		 e.printStackTrace();
+    	 }finally {
+            try {
+                if (ps != null)
+                        ps.close();
+                if (conn != null)
+                        conn.close();
+	        } catch (SQLException e) {
+	                e.printStackTrace();
+	        } catch (Exception e) {
+	                e.printStackTrace();
+	        }
+		}
     	 return -1;
      }
      

@@ -41,14 +41,41 @@ public class ConvertDAO {
 	                e.printStackTrace();
 	        }
 		}
-    	 System.err.println("Player "+name+" not found");
+    	System.err.println("Player "+name+" not found");
 		return 0;
 		
      }
 
      public int getTeamId(String teamName)
      {
-    	 return -1;
+    	 Connection conn = null;
+         PreparedStatement ps = null;
+         ResultSet rs = null;
+    	 try{
+    		 conn = getConnection();
+    		 ps = conn.prepareStatement("SELECT idTeam from team WHERE name = ?");
+    		 ps.setString(1,teamName);
+    		 rs=ps.executeQuery();
+    		 if(rs.next())
+    		 {
+    			 return rs.getInt(1);
+    		 }
+    	 }catch(SQLException e){
+    		 e.printStackTrace();
+    	 }finally {
+            try {
+                if (ps != null)
+                        ps.close();
+                if (conn != null)
+                        conn.close();
+	        } catch (SQLException e) {
+	                e.printStackTrace();
+	        } catch (Exception e) {
+	                e.printStackTrace();
+	        }
+		}
+    	System.err.println("Team "+teamName+" not found");
+    	return -1;
      }
      
      public int getNoMatchesWonBy(int teamId1,int teamId2)

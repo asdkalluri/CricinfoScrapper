@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 08, 2013 at 04:24 AM
+-- Generation Time: Apr 08, 2013 at 04:49 AM
 -- Server version: 5.5.8
 -- PHP Version: 5.3.5
 
@@ -2055,3 +2055,15 @@ CREATE TABLE IF NOT EXISTS `team` (
 -- Dumping data for table `team`
 --
 
+INSERT INTO `team` (`idTeam`, `name`, `rank`) VALUES
+(0, 'Name', 0),
+(1, 'India', 0),
+(2, 'Sri Lanka', 0),
+(3, 'Pakistan', 0),
+(4, 'England', 0),
+(5, 'South Africa', 0),
+(6, 'West Indies', 0),
+(7, 'Australia', 0),
+(8, 'New Zealand', 0),
+(9, 'Zimbabwe', 0),
+(10, 'Bangladesh', NULL);

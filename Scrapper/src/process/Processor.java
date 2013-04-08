@@ -59,7 +59,7 @@ public class Processor {
 		{
 			String playerName = team1Players.get(i);
 			int pid = dbConnection.getPlayerId(playerName);
-			int score1 = dbConnection.getMeanScoreForBatsmanAgainst(teamId2);
+			int score1 = dbConnection.getMeanScoreForBatsmanAgainst(pid, teamId1, teamId2);
 			int score2 = dbConnection.getMeanScoreForBatsmanInRecentTime(pid);
 			int score = (score1 + score2)/2;
 			team1Score = team1Score+ score;
@@ -71,7 +71,7 @@ public class Processor {
 		{
 			String playerName = team2Players.get(i);
 			int pid = dbConnection.getPlayerId(playerName);
-			int score1 = dbConnection.getMeanScoreForBatsmanAgainst(teamId1);
+			int score1 = dbConnection.getMeanScoreForBatsmanAgainst(pid, teamId2,teamId1);
 			int score2 = dbConnection.getMeanScoreForBatsmanInRecentTime(pid);
 			int score = (score1 + score2)/2;
 			team2Score = team2Score+ score;

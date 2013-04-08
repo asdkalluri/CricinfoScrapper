@@ -3,7 +3,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class ConvertDAO {
@@ -95,6 +97,40 @@ public class ConvertDAO {
      
      public int getMeanScoreForBatsmanInRecentTime(int playerId)
      {
+    	 Connection conn = null;
+         PreparedStatement ps = null;
+         ResultSet rs = null;
+    	 try{
+    		 conn = getConnection();
+    		 ps = conn.prepareStatement("SELECT runsScored from `scoretable` S, `match` M  WHERE S.idMatch = M.idmatch AND  S.idPlayer = ? and M.date < ?" +
+    		 		"order by M.date DESC");
+    		 ps.setInt(1,playerId);
+    		 Date d = new Date();
+    		 SimpleDateFormat sdf = new  SimpleDateFormat("yyyy/mm/dd");
+    		 ps.setString(2, sdf.format(d));
+    		 rs=ps.executeQuery();
+    		 int count = 0;
+    		 int runsScored=0;
+    		 while(rs.next()&&count<5)
+    		 {
+    			 runsScored+=rs.getInt(1);
+    			 count++;
+    		 }
+    		 return runsScored/count;
+    	 }catch(SQLException e){
+    		 e.printStackTrace();
+    	 }finally {
+            try {
+                if (ps != null)
+                        ps.close();
+                if (conn != null)
+                        conn.close();
+	        } catch (SQLException e) {
+	                e.printStackTrace();
+	        } catch (Exception e) {
+	                e.printStackTrace();
+	        }
+		}
     	 return -1;
      }
 

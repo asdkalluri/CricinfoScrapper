@@ -229,17 +229,27 @@ public class ConvertDAO {
     			 matches.add(rs.getInt(1));
     		 }
     		 
-    		 System.out.println(matches.size());
     		 
     		 int playerScore =0;
     		 for(int i=0;i<matches.size();i++)
     		 {
     			 int matchId = matches.get(i);
-    			 System.out.println(matchId);
     			 
+    			 conn = getConnection();
+        		 ps = conn.prepareStatement("SELECT runsScored FROM `scoretable` where idPlayer=? AND idMatch=?");
+        		 ps.setInt(1, pid);
+        		 ps.setInt(2, matchId);
+        		 rs=ps.executeQuery();
+        		 if(rs.next())
+        		 {
+        			 int score = rs.getInt(1);
+        			 System.out.println(score);
+        			 playerScore = playerScore + score;
+        		 }
     		 }
     		 
-    		 return -1;
+    		 playerScore = playerScore /matches.size();
+    		 return playerScore;
     	 }catch(SQLException e){
     		 e.printStackTrace();
     	 }finally {

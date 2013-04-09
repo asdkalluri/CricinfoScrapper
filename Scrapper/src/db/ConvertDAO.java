@@ -359,6 +359,55 @@ public class ConvertDAO {
 	 */
 	public int getMeanScoreForBatsman(int playerId, int clusterType, ArrayList<String> clusterMembers)
 	{
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try{
+			conn = getConnection();
+			int sum=0;
+			int count=0;
+			if(clusterType==1)//stadium
+			{
+				for(int i=0;i<clusterMembers.size();i++)
+				{
+					ps = conn.prepareStatement("SELECT avg(runsScored) from `match` M , `scoretable` ST , `stadium` S where S.name LIKE (?)"+
+							"and S.idStadium = M.ground and ST.idMatch = M.idMatch and ST.idPlayer=?");
+					ps.setString(1, "%"+clusterMembers.get(i)+"%");
+					ps.setInt(2, playerId);
+					rs=ps.executeQuery();
+					if(rs.next())
+					{
+						count++;
+						sum+=rs.getInt(1);
+					}
+				}
+				return sum/count;
+			}
+			else//match type actually tournament- "World cup" is a valid argument
+			{
+				 ps = conn.prepareStatement("SELECT avg(runsScored) from `match` M , `scoretable` ST  where M.tournament LIKE (?)"
+				 +"and ST.idMatch = M.idMatch and ST.idPlayer=?");
+					ps.setString(1, "%"+clusterMembers.get(0)+"%");
+					ps.setInt(2, playerId);
+					rs=ps.executeQuery();
+					if(rs.next())
+						return rs.getInt(1);
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 		return -1;
 	}
 }

@@ -23,6 +23,8 @@ public class Processor {
 	public final int randomVal =10;
 	ArrayList<Integer> team1ScoreList = new ArrayList<Integer>();
 	ArrayList<Integer> team2ScoreList = new ArrayList<Integer>();
+	public final String by = "by";
+	public final String against = "against";
 
 	public int randTestReturn(int score)
 	{
@@ -62,6 +64,48 @@ public class Processor {
 
 	}
 
+	public double getPythagoreanValue(int runsScoredBy, int runsScoredAgainst)
+	{
+		int p =2;
+		double probability = Math.pow(runsScoredBy, 2)/ (Math.pow(runsScoredBy, p) + Math.pow(runsScoredAgainst, p));
+		return probability;
+	}
+	
+	
+	public int processPythApproachForTeam(int teamId)
+	{
+		int runsScoredByTeam = dbConnection.getRunsScored(teamId,by);
+		int runsScoredAgainstTeam = dbConnection.getRunsScored(teamId,against);
+		double probTeam = getPythagoreanValue(runsScoredByTeam, runsScoredAgainstTeam);
+		
+		int probNormalizedOver10Matches = (int) (probTeam * 10);
+		int matchesWonOutOf5 = dbConnection.getNumberOfMatchesWonInlast5Matches(teamId);
+		int matchesToBeWonInNext5 = probNormalizedOver10Matches - matchesWonOutOf5;
+		return matchesToBeWonInNext5;
+	}
+	public void processPythaGoreanApproach(String roster1, String roster2)
+	{
+		int teamId1 = dbConnection.getTeamId((m.getTeam1()));
+		int teamId2 = dbConnection.getTeamId((m.getTeam2()));
+		
+		int winningChancesInNext5ForTeam1 = processPythApproachForTeam(teamId1);
+		int winningChancesInNext5ForTeam2 = processPythApproachForTeam(teamId2);
+		
+		if(winningChancesInNext5ForTeam1 > winningChancesInNext5ForTeam2)
+		{
+			System.out.println("Winner:"+teamId1);
+		}
+		if(winningChancesInNext5ForTeam1 < winningChancesInNext5ForTeam2)
+		{
+			System.out.println("Winner:"+teamId2);
+		}
+		else
+		{
+			System.out.println("TIE");
+		}
+	}
+	
+	
 	public void processTeamBasedApproach(String roster1, String roster2)
 	{
 		int teamId1 = dbConnection.getTeamId((m.getTeam1()));
@@ -209,7 +253,6 @@ public class Processor {
 
 		System.out.println("Solving clustering based approach: Tournaments");
 		processClusteringApproach(roster1, roster2, 2);
-
 
 	}
 

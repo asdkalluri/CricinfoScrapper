@@ -3,10 +3,12 @@ package process;
 import input.Reader;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import clustering.HCluster;
 
 import stubs.Match;
+import sun.security.krb5.internal.crypto.CksumType;
 import util.Utility;
 import db.ConvertDAO;
 
@@ -16,6 +18,21 @@ public class Processor {
 	Match m = new Match();
 	ConvertDAO dbConnection = new ConvertDAO();
 	HCluster cluster = new HCluster();
+	public final int stadiumApproach =1;
+	public final int seriesApproach =2;
+	public final int randomVal =10;
+	ArrayList<Integer> team1ScoreList = new ArrayList<Integer>();
+	ArrayList<Integer> team2ScoreList = new ArrayList<Integer>();
+
+	public int randTestReturn(int score)
+	{
+		if(score <5)
+		{
+			Random g = new Random();
+			return g.nextInt(randomVal);
+		}
+		return score;
+	}
 
 	public Match readMatchDetails(String matchFile)
 	{
@@ -65,10 +82,10 @@ public class Processor {
 			int score1 = dbConnection.getMeanScoreForBatsmanAgainst(pid, teamId1, teamId2);
 			int score2 = dbConnection.getMeanScoreForBatsmanInRecentTime(pid);
 			int score = (score1 + score2)/2;
-			System.out.println("player:"+playerName);
+			/*System.out.println("player:"+playerName);
 			System.out.println("Score1:"+score1);
 			System.out.println("Score2:"+score2);
-			System.out.println("Normalized score:"+score);
+			System.out.println("Normalized score:"+score);*/
 			team1Score = team1Score+ score;
 		}
 
@@ -81,29 +98,38 @@ public class Processor {
 			int score1 = dbConnection.getMeanScoreForBatsmanAgainst(pid, teamId2,teamId1);
 			int score2 = dbConnection.getMeanScoreForBatsmanInRecentTime(pid);
 			int score = (score1 + score2)/2;
-			System.out.println("player:"+playerName);
+			/*System.out.println("player:"+playerName);
 			System.out.println("Score1:"+score1);
 			System.out.println("Score2:"+score2);
-			System.out.println("Normalized score:"+score);
+			System.out.println("Normalized score:"+score);*/
 			team2Score = team2Score+ score;
-		}
+		}		
 
-		/*double	t1Score =  team1Score * (team1Strength / (double)team2Strength);
-		double t2Score = team2Score * (team2Strength / (double)team1Strength);*/
-		
-		
 		System.out.println("Predicted Scores:");
 		System.out.println(teamId1+":"+team1Score);
 		System.out.println(teamId2+":"+team2Score);
+
+		team1ScoreList.add(team1Score);
+		team2ScoreList.add(team2Score);
 	}
 
 	public void processClusteringApproach(String roster1, String roster2, int clusteringApproach)
 	{
 		int teamId1 = dbConnection.getTeamId((m.getTeam1()));
 		int teamId2 = dbConnection.getTeamId((m.getTeam2()));
+		ArrayList<String> clusterMembers = new  ArrayList<String>();
 
-		String city = m.getLocation();
-		ArrayList<String> clusterMembers = cluster.getClusters(city);
+		if(clusteringApproach == stadiumApproach)
+		{
+			String city = m.getLocation().trim();
+			clusterMembers = cluster.getClusters("Colombo");
+		}
+		else
+		{
+			String series = m.getSeries();
+			clusterMembers.add(series);
+		}
+
 		ArrayList<String> team1Players = Utility.readFile(roster1);
 		ArrayList<String> team2Players = Utility.readFile(roster2);
 
@@ -113,10 +139,14 @@ public class Processor {
 		{
 			String playerName = team1Players.get(i);
 			int pid = dbConnection.getPlayerId(playerName);
-			
+
 			int score = dbConnection.getMeanScoreForBatsman(pid, clusteringApproach, clusterMembers);
-			System.out.println("player:"+playerName);
-			System.out.println("Score:"+score);
+			score = randTestReturn(score);
+
+			/*System.out.println("player:"+playerName);
+			System.out.println("Score:"+score);*/
+
+
 			team1Score = team1Score+ score;
 		}
 
@@ -126,32 +156,59 @@ public class Processor {
 		{
 			String playerName = team2Players.get(i);
 			int pid = dbConnection.getPlayerId(playerName);
-			int score1 = dbConnection.getMeanScoreForBatsmanAgainst(pid, teamId2,teamId1);
-			int score2 = dbConnection.getMeanScoreForBatsmanInRecentTime(pid);
-			int score = (score1 + score2)/2;
-			System.out.println("player:"+playerName);
-			System.out.println("Score1:"+score1);
-			System.out.println("Score2:"+score2);
-			System.out.println("Normalized score:"+score);
+			int score = dbConnection.getMeanScoreForBatsmanAgainst(pid, teamId2,teamId1);
+			score = randTestReturn(score);
+			/*System.out.println("player:"+playerName);
+			System.out.println("Score:"+score);*/
 			team2Score = team2Score+ score;
 		}
 
-		/*double	t1Score =  team1Score * (team1Strength / (double)team2Strength);
-		double t2Score = team2Score * (team2Strength / (double)team1Strength);*/
-		
-		
 		System.out.println("Predicted Scores:");
 		System.out.println(teamId1+":"+team1Score);
 		System.out.println(teamId2+":"+team2Score);
+
+		team1ScoreList.add(team1Score);
+		team2ScoreList.add(team2Score);
+	}
+
+
+	public int getMeanScore(ArrayList<Integer> list)
+	{
+		int size = list.size();
+		int sum = 0;
+		for(int i=0;i<size;i++)
+		{
+			sum = sum + list.get(i);
+		}
+		return (sum)/size;
+	}
+
+	public void printFinalPredictions()
+	{
+		int teamId1 = dbConnection.getTeamId((m.getTeam1()));
+		int teamId2 = dbConnection.getTeamId((m.getTeam2()));
+		System.out.println("Final Predictions:");
+		int score1 =getMeanScore(team1ScoreList);
+		int score2 =getMeanScore(team2ScoreList);
+		System.out.println(teamId1+":"+score1);
+		System.out.println(teamId2+":"+score2);	
+	
 	}
 
 	public void processMatch(String matchFile, String roster1, String roster2)
 	{
+		cluster.parseLinesIntoPoints();
 		m = readMatchDetails(matchFile);
 		//m.printMatchDetails();
+
+		System.out.println("Solving for teamBased approach:");
 		processTeamBasedApproach(roster1,roster2);
+
+		System.out.println("Solving clustering based approach: Stadiums");
 		processClusteringApproach(roster1, roster2, 1);
-		
+
+		System.out.println("Solving clustering based approach: Tournaments");
+		processClusteringApproach(roster1, roster2, 2);
 
 
 	}

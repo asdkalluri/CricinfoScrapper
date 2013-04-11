@@ -14,6 +14,7 @@ public class HCluster {
 	public static int  MIN =1;
 	public static int  AVG =3;
 
+
 	public HCluster()
 	{
 		init();
@@ -44,12 +45,11 @@ public class HCluster {
 		}
 	}
 
-	public void printClusters(ArrayList<Cluster> clusterList)
+	/*public void printClusters(ArrayList<Cluster> clusterList)
 	{
-		//System.out.println("Total clusters found:"+clusterList.size());
 		for(Cluster c: clusterList)
 			c.printCluster();
-	}
+	}*/
 
 	public double getDistance(Point p1, Point p2)
 	{
@@ -178,7 +178,7 @@ public class HCluster {
 			}
 		}
 		Entry<Double, Distance> pair = distanceMap.pollFirstEntry();
-		pair.getValue().printDistanceDetails();
+		//pair.getValue().printDistanceDetails();
 		return pair.getValue();
 	}
 
@@ -240,12 +240,13 @@ public class HCluster {
 		for(int i=0;i<size;i++)
 		{
 			Cluster c = clusters.get(i);
-			System.out.println(c.getLabel());
 			String label = c.getLabel();
 			String [] names =  label.split(Utility.space);
 			
 			for(int j=0;j<names.length;j++)
 			{
+				//System.out.println("Name to compare:"+city);
+				//System.out.println("Current Name:"+names[j]);
 				if(names[j].equalsIgnoreCase(city))
 				{
 					ArrayList<String> cities = getCities(label);
@@ -306,7 +307,7 @@ public class HCluster {
 	{
 		HCluster clustering = new HCluster();
 		clustering.parseLinesIntoPoints();
-		ArrayList<String> cities = clustering.getClusters("Mumbai");
+		ArrayList<String> cities = clustering.getClusters("Colombo");
 		
 		System.out.println("Cluster size:"+cities.size());
 		for(int i=0;i<cities.size();i++)

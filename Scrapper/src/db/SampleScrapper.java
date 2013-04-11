@@ -25,7 +25,7 @@ public class SampleScrapper {
 		boolean firstInningsAllout = true;
 		if(count!=11)
 		{
-			addDNB(inningsTable.get(1));
+			addDNB(inningsTable.get(1));http://www.espncricinfo.com/ci/engine/match/287862.htmlhttp://www.espncricinfo.com/ci/engine/match/287862.htmlhttp://www.espncricinfo.com/ci/engine/match/287862.html
 			firstInningsAllout= false;	
 		}
 		//11 players of team 1 added by now

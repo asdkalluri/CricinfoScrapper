@@ -370,7 +370,7 @@ public class ConvertDAO {
 			{
 				for(int i=0;i<clusterMembers.size();i++)
 				{
-					ps = conn.prepareStatement("SELECT avg(runsScored) from `match` M , `scoretable` ST , `stadium` S where S.name LIKE (?)"+
+					ps = conn.prepareStatement("SELECT avg(runsScored) from `match` M , `scoretable` ST , `stadium` S where S.city LIKE (?)"+
 							"and S.idStadium = M.ground and ST.idMatch = M.idMatch and ST.idPlayer=?");
 					ps.setString(1, "%"+clusterMembers.get(i)+"%");
 					ps.setInt(2, playerId);

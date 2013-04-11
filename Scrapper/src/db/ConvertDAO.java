@@ -370,7 +370,7 @@ public class ConvertDAO {
 			{
 				for(int i=0;i<clusterMembers.size();i++)
 				{
-					ps = conn.prepareStatement("SELECT avg(runsScored) from `match` M , `scoretable` ST , `stadium` S where S.name LIKE (?)"+
+					ps = conn.prepareStatement("SELECT avg(runsScored) from `match` M , `scoretable` ST , `stadium` S where S.city LIKE (?)"+
 							"and S.idStadium = M.ground and ST.idMatch = M.idMatch and ST.idPlayer=?");
 					ps.setString(1, "%"+clusterMembers.get(i)+"%");
 					ps.setInt(2, playerId);
@@ -408,6 +408,55 @@ public class ConvertDAO {
 			}
 		}
 		
+		return -1;
+	}
+
+	public int getRunsScored(int teamId,String type)
+	{
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try{
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT * FROM `match` M  where M.team1=? or M.team2=? order by M.date desc");
+			ps.setInt(1,teamId);
+			ps.setInt(2,teamId);
+			rs=ps.executeQuery();
+			int count = 0;
+			int runsScored=0;
+			while(rs.next()&&count<5)
+			{
+				if(type.equalsIgnoreCase("by"))
+				{
+					if(rs.getInt("team1")==teamId)
+						runsScored+=rs.getInt("team1Score");
+					else
+						runsScored+=rs.getInt("team2Score");
+				}
+				else
+				{
+					if(rs.getInt("team1")==teamId)
+						runsScored+=rs.getInt("team2Score");
+					else
+						runsScored+=rs.getInt("team1Score");
+				}
+				count++;
+			}
+			return runsScored;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}finally {
+			try {
+				if (ps != null)
+					ps.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 		return -1;
 	}
 }

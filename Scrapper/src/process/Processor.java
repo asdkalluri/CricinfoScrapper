@@ -150,6 +150,8 @@ public class Processor {
 		m = readMatchDetails(matchFile);
 		//m.printMatchDetails();
 		processTeamBasedApproach(roster1,roster2);
+		processClusteringApproach(roster1, roster2, 1);
+		
 
 
 	}

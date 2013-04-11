@@ -14,7 +14,7 @@ public class HCluster {
 	public static int  MIN =1;
 	public static int  AVG =3;
 
-	HCluster()
+	public HCluster()
 	{
 		init();
 	}
@@ -46,7 +46,7 @@ public class HCluster {
 
 	public void printClusters(ArrayList<Cluster> clusterList)
 	{
-		System.out.println("Total clusters found:"+clusterList.size());
+		//System.out.println("Total clusters found:"+clusterList.size());
 		for(Cluster c: clusterList)
 			c.printCluster();
 	}
@@ -182,10 +182,9 @@ public class HCluster {
 		return pair.getValue();
 	}
 
-	public void clusterThemAll(int mode)
+	public ArrayList<Cluster> getClustersList(int mode)
 	{
 		ArrayList<Cluster> localClusters = clusters;
-		
 		if(mode !=AVG)
 		{
 			while(localClusters.size() > 11)
@@ -211,7 +210,6 @@ public class HCluster {
 			while(localClusters.size() > 10)
 			{
 				Distance d = getAvgeDistance(localClusters);
-				//d.printDistanceDetails();
 				Point p1 = d.getOne();
 				Point p2 = d.getTwo();
 				int index1 = getCenterContainingCluster(localClusters, p1);
@@ -219,9 +217,43 @@ public class HCluster {
 				localClusters = combineClusters(localClusters, index1, index2);
 			}
 		}
-		printClusters(localClusters);
-
-
+		return localClusters;
+	}
+	
+	
+	public ArrayList<String> getCities(String label)
+	{
+		ArrayList<String> cities = new ArrayList<String>();
+		String [] names =  label.split(Utility.space);
+		for(int i=0;i<names.length;i++)
+		{
+			cities.add(names[i]);
+		}
+		return cities;
+	}
+	
+	public ArrayList<String> getClusters(String city)
+	{
+		ArrayList<Cluster> clusters = getClustersList(AVG);
+		int size = clusters.size();
+		
+		for(int i=0;i<size;i++)
+		{
+			Cluster c = clusters.get(i);
+			System.out.println(c.getLabel());
+			String label = c.getLabel();
+			String [] names =  label.split(Utility.space);
+			
+			for(int j=0;j<names.length;j++)
+			{
+				if(names[j].equalsIgnoreCase(city))
+				{
+					ArrayList<String> cities = getCities(label);
+					return cities;
+				}
+			}
+		}
+		return null;
 	}
 
 	public ArrayList<Cluster> combineClusters(ArrayList<Cluster> localClusters, int index1, int index2)
@@ -274,7 +306,13 @@ public class HCluster {
 	{
 		HCluster clustering = new HCluster();
 		clustering.parseLinesIntoPoints();
-		clustering.clusterThemAll(AVG);
+		ArrayList<String> cities = clustering.getClusters("Mumbai");
+		
+		System.out.println("Cluster size:"+cities.size());
+		for(int i=0;i<cities.size();i++)
+		{
+			System.out.println(cities.get(i));
+		}
 
 	}
 }

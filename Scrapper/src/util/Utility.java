@@ -48,6 +48,35 @@ public class Utility {
 	{
 		return System.getProperty("user.dir");
 	}
+	
+	public static String returnFirstNWords(String t, int n)
+	{
+		if(t == null)
+			return null;
+
+		String words [] = t.split(space);
+
+		ArrayList<String> list = new ArrayList<String>();
+		for(int i=0;i<words.length;i++)
+		{	
+			if(!words[i].equalsIgnoreCase(""))
+				list.add(words[i]);
+		}
+
+		int size = list.size();
+
+		if(size < n)
+			return null;
+		else
+		{
+			StringBuilder sb = new StringBuilder();
+			for(int i=0;i<n;i++)
+				sb.append(list.get(i)).append(space);
+			return sb.toString().trim();
+		}
+	}
+
+
 
 	public static void writeFile(String name, ArrayList<String> data)
 	{

@@ -223,7 +223,7 @@ public class SampleScrapper {
 			PlayerRecord player = new PlayerRecord();
 //			System.out.println(inningsDetails.get(i).text());
 			player.playerName = inningsDetails.get(i).text();
-			player.playerID = dao.lookupID(player.playerName);
+			player.playerID = dao.getPlayerId(player.playerName);
 			twentyTwo.add(player);
 		}
 		
@@ -242,7 +242,7 @@ public class SampleScrapper {
 			if(wKC.get(0).text().contains("†"))
 				player.isWK=true;
 			player.playerName = batsmanName.text();
-			player.playerID = dao.lookupID(player.playerName);
+			player.playerID = dao.getPlayerId(player.playerName);
 			Elements runDetails = batsman.getElementsByClass("battingRuns");
 			int runs[] = new int[5];
 			runs[0] = Integer.parseInt(runDetails.get(0).text());
